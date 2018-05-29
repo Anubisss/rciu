@@ -1,0 +1,34 @@
+{
+  "name": "rciu",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": "^8.9.3"
+  },
+  "description": "RCIU (Rando Capital instrument updates) a simple scheduled AWS Lambda function (managed via Serverless) which generatesa HTML and a JSON data file and puts them to an AWS S3 bucket. The JSON data file contains all the instruments (filtered) and also the updates (removed or added) about them. The HTML file contains a table which shows all the updates from the JSON data file.",
+  "keywords": [
+    "random capital",
+    "stock",
+    "etf",
+    "instrument"
+  ],
+  "homepage": "https://github.com/Anubisss/rciu",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Anubisss/rciu.git"
+  },
+  "author": "David Vas, anuka <david.vas1@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.243.1",
+    "ejs": "^2.6.1",
+    "fast-array-diff": "^0.2.0",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.1",
+    "request": "^2.87.0",
+    "winston": "^2.4.2"
+  },
+  "devDependencies": {
+    "serverless": "^1.27.3"
+  }
+}

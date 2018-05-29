@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Random Capital Instrument Updates</title>
+    <meta name="keywords" content="random capital, stock, etf, pink sheet, instrument, BATS global markets">
+    <meta name="description" content="Random Capital's instrument updates.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css">
+    <% if (gaTrackingId) { %>
+      <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', '<%= gaTrackingId %>', 'auto');
+      ga('send', 'pageview');
+      </script>
+      <script async src='https://www.google-analytics.com/analytics.js'></script>
+    <% } %>
+  </head>
+  <body>
+    <h1 class="text-center mt-3">Random Capital Instrument Updates</h1>
+    <% if (instrumentUpdates.length) { %>
+      <table class="table table-borderless table-sm mt-5 mb-5">
+        <thead class="thead-dark">
+          <tr>
+            <th>Date</th>
+            <th>Action</th>
+            <th>ISIN</th>
+            <th>Ticker</th>
+            <th>Name</th>
+            <th>Long name</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% instrumentUpdates.forEach(instrumentUpdate => { %>
+            <tr class="<%= instrumentUpdate.type === 'added' ? 'bg-success' : 'bg-danger' %>">
+              <td><%= formatDate(instrumentUpdate.dateTime) %></td>
+              <td><%= instrumentUpdate.type === 'added' ? 'Added' : 'Removed' %></td>
+              <td><%= instrumentUpdate.instrument.ticker %></td>
+              <td><%= instrumentUpdate.instrument.isinCode %></td>
+              <td><%= instrumentUpdate.instrument.shortName %></td>
+              <td><%= instrumentUpdate.instrument.longName %></td>
+              <td><%= instrumentUpdate.instrument.type %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <div class="font-weight-bold text-center mt-5 mb-5">NO UPDATES.</div>
+    <% } %>
+    <footer class="text-center text-secondary small mb-3">
+      <div>This is not a Random Capital product. Created for fun and personal usage.</div>
+      <div>Generated on <%= generationDate %> by <a href="https://github.com/Anubisss/rciu" target="_blank">RCIU</a>.</div>
+    </footer>
+  </body>
+</html>
