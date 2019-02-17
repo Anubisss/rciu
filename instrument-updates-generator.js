@@ -11,7 +11,7 @@ const moment = require('moment')
 const HOST_S3_BUCKET_NAME = process.env.HOST_S3_BUCKET_NAME
 const GA_TRACKING_ID = process.env.GA_TRACKING_ID
 
-const DATA_URL = 'http://www.randomcapital.hu/papirkereso/basedata.json'
+const DATA_URL = 'https://randomcapital.hu/uploads/ik/basedata.json'
 const INSTRUMENT_TYPES_TO_SAVE = [ 'Részvény', 'ETF', 'Pink Sheet' ]
 
 const ISIN_CODE_REGEX = /^([A-Z]{2})[A-Z0-9]{9}\d{1}$/
