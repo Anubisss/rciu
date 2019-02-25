@@ -36,8 +36,8 @@
             <tr class="<%= instrumentUpdate.type === 'added' ? 'bg-success' : 'bg-danger' %>">
               <td><%= formatDate(instrumentUpdate.dateTime) %></td>
               <td><%= instrumentUpdate.type === 'added' ? 'Added' : 'Removed' %></td>
-              <td><%= instrumentUpdate.instrument.ticker %></td>
               <td><%= instrumentUpdate.instrument.isinCode %></td>
+              <td><%= instrumentUpdate.instrument.ticker %></td>
               <td><%= instrumentUpdate.instrument.shortName %></td>
               <td><%= instrumentUpdate.instrument.longName %></td>
               <td><%= instrumentUpdate.instrument.type %></td>
