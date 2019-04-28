@@ -1,6 +1,6 @@
 'use strict'
 
-const request = require('request')
+const request = require('request-promise')
 const _ = require('lodash')
 const AWS = require('aws-sdk')
 const winston = require('winston')
@@ -56,20 +56,13 @@ function instrumentSortCompare(a, b) {
   return (a.isinCode > b.isinCode) - (a.isinCode < b.isinCode)
 }
 
-function getInstrumentsData() {
+async function getInstrumentsData() {
   winston.info('getInstrumentsData')
-  return new Promise((resolve, reject) => {
-    request.get(DATA_URL, (err, res, body) => {
-      if (err) {
-        reject(err)
-      }
-      else if (res.statusCode !== 200) {
-        reject(new Error(`got non 200 response, status code: ${ res.statusCode }`))
-      } else {
-        resolve(body)
-      }
-    })
-  })
+  try {
+    return await request.get(DATA_URL)
+  } catch (err) {
+    throw new Error(`got non 200 response, error name: ${ err.name }, status code: ${ err.statusCode }`)
+  }
 }
 
 function doParseAndValidation(body) {
@@ -114,23 +107,21 @@ function selectInstruments(instruments) {
   return instruments.filter(instrumentRow => INSTRUMENT_TYPES_TO_SAVE.indexOf(createInstrument(instrumentRow).type) !== -1)
 }
 
-function doesDataFileExist() {
+async function doesDataFileExist() {
   winston.info('doesDataFileExist')
-  return new Promise((resolve, reject) => {
-    const params = {
-      Bucket: HOST_S3_BUCKET_NAME,
-      Key: DATA_FILE_NAME,
+  const params = {
+    Bucket: HOST_S3_BUCKET_NAME,
+    Key: DATA_FILE_NAME,
+  }
+  try {
+    await s3Client.headObject(params).promise()
+    return true
+  } catch (err) {
+    if (err.code === 'NotFound') {
+      return false
     }
-    s3Client.headObject(params).promise()
-    .then(() => resolve(true))
-    .catch(err => {
-      if (err.code === 'NotFound') {
-        resolve(false)
-      } else {
-        reject(err)
-      }
-    })
-  })
+    throw err
+  }
 }
 
 function initDataFileToS3(instruments) {
@@ -163,7 +154,7 @@ function readDataFileFromS3() {
   return s3Client.getObject(params).promise()
 }
 
-function saveDataFileToS3(instrumentRows, dataFileBody) {
+async function saveDataFileToS3(instrumentRows, dataFileBody) {
   winston.info('saveDataFileToS3')
 
   const instruments = []
@@ -193,17 +184,15 @@ function saveDataFileToS3(instrumentRows, dataFileBody) {
 
   dataFile.instruments = instruments
 
-  return new Promise((resolve, reject) => {
-    const params = {
-      Bucket: HOST_S3_BUCKET_NAME,
-      Key: DATA_FILE_NAME,
-      Body: JSON.stringify(dataFile),
-      ContentType: 'application/json; charset=utf-8',
-    }
-    s3Client.putObject(params).promise()
-    .then(() => resolve(dataFile.updates))
-    .catch(reject)
-  })
+  const params = {
+    Bucket: HOST_S3_BUCKET_NAME,
+    Key: DATA_FILE_NAME,
+    Body: JSON.stringify(dataFile),
+    ContentType: 'application/json; charset=utf-8',
+  }
+  await s3Client.putObject(params).promise()
+
+  return dataFile.updates
 }
 
 function renderHtml(instrumentUpdates) {
@@ -239,7 +228,7 @@ function uploadInstrumentUpdatesToS3(html) {
 }
 
 
-function Handler(event, context, callback) {
+async function Handler(event, context) {
   winston.remove(winston.transports.Console)
   winston.add(winston.transports.Console, {
     formatter: LogFormatter.bind(null, context.awsRequestId),
@@ -257,34 +246,35 @@ function Handler(event, context, callback) {
 
   s3Client = new AWS.S3()
 
-  getInstrumentsData()
-  .then(doParseAndValidation)
-  .then(selectInstruments)
-  .then(instruments => {
-    return doesDataFileExist()
-    .then(exists => exists ? readDataFileFromS3() : initDataFileToS3(instruments))
-    .then(res => { return { instruments, dataFile: res.Body } })
-  })
-  .then(res => {
-    if (res.dataFile) {
-      return saveDataFileToS3(res.instruments, res.dataFile)
+  try {
+    const instrumentsData = await getInstrumentsData()
+    const instruments = doParseAndValidation(instrumentsData)
+    const selectedInstruments = selectInstruments(instruments)
+
+    let dataFile;
+    if (await doesDataFileExist()) {
+      dataFile = await readDataFileFromS3()
     } else {
-      return []
+      dataFile = await initDataFileToS3(selectedInstruments)
     }
-  })
-  .then(instrumentUpdates => {
+
+    let instrumentUpdates;
+    if (dataFile.Body) {
+      instrumentUpdates = await saveDataFileToS3(selectedInstruments, dataFile.Body)
+    } else {
+      instrumentUpdates = []
+    }
+
     instrumentUpdates.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime))
-    return renderHtml(instrumentUpdates)
-    .then(uploadInstrumentUpdatesToS3)
-  })
-  .then(() => {
-    winston.info('instrument updates generated')
-    callback(null, 'instrument updates generated')
-  })
-  .catch(err => {
+    const html = await renderHtml(instrumentUpdates)
+    await uploadInstrumentUpdatesToS3(html)
+  } catch (err) {
     winston.error('error occured during instruments saving', err)
-    callback(err)
-  })
+    throw err
+  }
+
+  winston.info('instrument updates generated')
+  return 'instrument updates generated'
 }
 
 module.exports = {

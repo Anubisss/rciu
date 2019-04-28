@@ -25,7 +25,8 @@
     "fast-array-diff": "^0.2.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.1",
-    "request": "^2.87.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "winston": "^2.4.2"
   },
   "devDependencies": {
