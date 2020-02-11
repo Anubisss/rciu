@@ -76,7 +76,7 @@ function doParseAndValidation(body) {
   const instruments = parsedBody.data
 
   instruments.forEach(instrumentRow => {
-    if (!_.isArray(instrumentRow) || instrumentRow.length !== 5) {
+    if (!_.isArray(instrumentRow) || instrumentRow.length < 5 || instrumentRow.length > 7) {
       throw new InstrumentError('invalid instrument row', instrumentRow)
     }
 
