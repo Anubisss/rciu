@@ -1,9 +1,9 @@
 {
   "name": "rciu",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "instrument-updates-generator.js",
   "engines": {
-    "node": "10.17.0"
+    "node": "12.15.0"
   },
   "description": "RCIU (Rando Capital instrument updates) a simple scheduled AWS Lambda function (managed via Serverless) which generatesa HTML and a JSON data file and puts them to an AWS S3 bucket. The JSON data file contains all the instruments (filtered) and also the updates (removed or added) about them. The HTML file contains a table which shows all the updates from the JSON data file.",
   "keywords": [
@@ -20,16 +20,16 @@
   "author": "David Vas, anuka <david.vas1@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.243.1",
-    "ejs": "^2.6.1",
+    "aws-sdk": "^2.645.0",
+    "ejs": "^3.0.1",
     "fast-array-diff": "^0.2.0",
-    "lodash": "^4.17.13",
-    "moment": "^2.22.1",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
-    "winston": "^2.4.2"
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
-    "serverless": "^1.27.3"
+    "serverless": "^1.67.0"
   }
 }

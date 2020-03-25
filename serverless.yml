@@ -2,7 +2,7 @@ service: rciu
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: production
   region: eu-central-1
   memorySize: 128

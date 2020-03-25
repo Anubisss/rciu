@@ -32,7 +32,7 @@ class InstrumentError extends Error {
 }
 
 function LogFormatter(awsRequestId, options) {
-  const { level, message: msg, meta } = options
+  const { level, message: msg, ...meta } = options
 
   return JSON.stringify({
     level,
@@ -230,9 +230,9 @@ function uploadInstrumentUpdatesToS3(html) {
 
 async function Handler(event, context) {
   winston.remove(winston.transports.Console)
-  winston.add(winston.transports.Console, {
-    formatter: LogFormatter.bind(null, context.awsRequestId),
-  })
+  winston.add(new winston.transports.Console({
+    format: winston.format.printf(LogFormatter.bind(null, context.awsRequestId)),
+  }))
 
   winston.info('starting', {
     nodeEnv: process.env.NODE_ENV,
