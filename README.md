@@ -3,7 +3,7 @@ RCIU is a simple scheduled AWS Lambda function (managed via Serverless) which ge
 The JSON data file contains all the instruments (filtered) and also the updates (removed or added) about them.
 The HTML file contains a table which shows all the updates from the JSON data file.
 
-Live: http://rciu.anuka.me/
+Live: https://rciu.anuka.me/
 
 ### Note
 This is not a Random Capital product. Created for fun and personal usage.
