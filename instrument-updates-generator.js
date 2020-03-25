@@ -20,6 +20,8 @@ const DATA_FILE_NAME = 'data.json'
 
 const TEMPLATE_PATH_INSTRUMENT_UPDATES = './instrument-updates.ejs'
 
+const CACHE_TTL = 3600
+
 let s3Client = null
 
 class InstrumentError extends Error {
@@ -223,6 +225,7 @@ function uploadInstrumentUpdatesToS3(html) {
     Key: 'instrument-updates.html',
     Body: html,
     ContentType: 'text/html; charset=utf-8',
+    CacheControl: `public, max-age=${CACHE_TTL}`,
   }
   return s3Client.putObject(params).promise()
 }
