@@ -4,6 +4,7 @@ const request = require('request-promise')
 const _ = require('lodash')
 const AWS = require('aws-sdk')
 const winston = require('winston')
+const wjlf = require('winston-json-log-formatter')
 const arrayDiff = require('fast-array-diff')
 const ejs = require('ejs')
 const moment = require('moment')
@@ -31,17 +32,6 @@ class InstrumentError extends Error {
     this.name = `${ this.constructor.name }: ${ message }`
     this.invalidElement = invalidElement
   }
-}
-
-function LogFormatter(awsRequestId, options) {
-  const { level, message: msg, ...meta } = options
-
-  return JSON.stringify({
-    level,
-    msg,
-    meta,
-    awsRequestId,
-  })
 }
 
 function createInstrument(instrumentRow) {
@@ -232,10 +222,7 @@ function uploadInstrumentUpdatesToS3(html) {
 
 
 async function Handler(event, context) {
-  winston.remove(winston.transports.Console)
-  winston.add(new winston.transports.Console({
-    format: winston.format.printf(LogFormatter.bind(null, context.awsRequestId)),
-  }))
+  wjlf.setupTransport(winston, false, { awsRequestId: context.awsRequestId })
 
   winston.info('starting', {
     nodeEnv: process.env.NODE_ENV,

@@ -4478,6 +4478,11 @@ widest-line@^2.0.0:
   dependencies:
     string-width "^2.1.1"
 
+winston-json-log-formatter@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/winston-json-log-formatter/-/winston-json-log-formatter-1.0.0.tgz#510f51ac734b12e755ac8689b531d72ba19b2932"
+  integrity sha512-/l2Q57HLz74u6KLgr9Zymc/vqnj2CSq6lTy0/Hk90cPXKG+BVNPqDpl8FLnBidVUqGIORBpluM8SRUQdpP9fNw==
+
 winston-transport@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/winston-transport/-/winston-transport-4.3.0.tgz#df68c0c202482c448d9b47313c07304c2d7c2c66"
