@@ -23,7 +23,7 @@
     "aws-sdk": "^2.645.0",
     "ejs": "^3.0.1",
     "fast-array-diff": "^0.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
