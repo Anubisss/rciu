@@ -1,3 +1,5 @@
+# This app/website doesn't work anymore since Random Capital merged into Erste Befektetési Zrt.
+
 # RCIU (Random Capital Instrument Updates)
 RCIU is a simple scheduled AWS Lambda function (managed via Serverless) which generates a HTML and a JSON data file and puts them to an AWS S3 bucket.
 The JSON data file contains all the instruments (filtered) and also the updates (removed or added) about them.
